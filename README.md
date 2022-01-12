@@ -2,6 +2,8 @@
 
 A Command line tool for downloading video or image data from `Instagram`
 
+[![instaget CI](https://github.com/wuriyanto48/instaget/actions/workflows/ci.yml/badge.svg)](https://github.com/wuriyanto48/instaget/actions/workflows/ci.yml)
+
 ### Build binary from source
 Requirements
 - Rust https://www.rust-lang.org/
