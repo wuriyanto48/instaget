@@ -8,8 +8,6 @@ use std::sync::{ Arc, Mutex };
 use instaget:: { argument, download };
 
 fn main() {
-    let done: Arc<AtomicBool> = Arc::new(AtomicBool::new(false));
-
     let args: Vec<String> = env::args().collect();
 
     let argument = argument::Argument::parse(&args);
@@ -31,6 +29,8 @@ fn main() {
         process::exit(1);
     }
 
+    // begin to download
+    let done: Arc<AtomicBool> = Arc::new(AtomicBool::new(false));
     let shared_file_type = Arc::new(Mutex::new(String::new()));
     let file_type = shared_file_type.clone();
 
