@@ -137,10 +137,10 @@ pub fn download(url: &Url, out: &mut impl Write,
 
 fn random_user_agent() -> String {
     let browsers = vec!["Firefox", "Safari", "Opera", "Flock", "Internet Explorer", "Seamonkey", "Tor Browser", "GNU IceCat", "CriOS", "TenFourFox",
-		"SeaMonkey", "B-l-i-t-z-B-O-T", "Konqueror", "Mobile", "Konqueror", "Netscape", "Chrome", "Dragon", "SeaMonkey", "Maxthon", "IBrowse",
-		"K-Meleon", "GoogleBot", "Konqueror", "Minimo", "Googlebot", "WeltweitimnetzBrowser", "SuperBot", "TerrawizBot", "YodaoBot", "Wyzo", "Grail",
-		"PycURL", "Galaxy", "EnigmaFox", "008", "ABACHOBot", "Bimbot", "Covario IDS", "iCab", "KKman", "Oregano", "WorldWideWeb", "Wyzo", "GNU IceCat",
-		"Vimprobable", "uzbl", "Slim Browser", "Flock", "OmniWeb", "Rockmelt", "Shiira", "Swift", "Pale Moon", "Camino", "Flock", "Galeon", "Sylera"];
+        "SeaMonkey", "B-l-i-t-z-B-O-T", "Konqueror", "Mobile", "Konqueror", "Netscape", "Chrome", "Dragon", "SeaMonkey", "Maxthon", "IBrowse",
+        "K-Meleon", "GoogleBot", "Konqueror", "Minimo", "Googlebot", "WeltweitimnetzBrowser", "SuperBot", "TerrawizBot", "YodaoBot", "Wyzo", "Grail",
+        "PycURL", "Galaxy", "EnigmaFox", "008", "ABACHOBot", "Bimbot", "Covario IDS", "iCab", "KKman", "Oregano", "WorldWideWeb", "Wyzo", "GNU IceCat",
+        "Vimprobable", "uzbl", "Slim Browser", "Flock", "OmniWeb", "Rockmelt", "Shiira", "Swift", "Pale Moon", "Camino", "Flock", "Galeon", "Sylera"];
 
     let operating_systems = vec!["Windows 3.1", "Windows 95", "Windows 98", "Windows 2000", "Windows NT", "Linux 2.4.22-10mdk", "FreeBSD",
         "Windows XP", "Windows Vista", "Redhat Linux", "Ubuntu", "Fedora", "AmigaOS", "BackTrack Linux", "iPad", "BlackBerry", "Unix",

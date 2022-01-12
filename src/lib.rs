@@ -5,5 +5,3 @@ mod http;
 pub mod argument;
 
 pub use self::http::download;
-
-
