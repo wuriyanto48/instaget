@@ -118,8 +118,6 @@ pub fn download(url: &Url, out: &mut impl Write,
         }
     }
 
-    println!();
-
     if download_data.is_video {
         let mut file_type_u = file_type.lock().unwrap();
         file_type_u.clear();
