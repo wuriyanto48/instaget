@@ -8,7 +8,7 @@ pub struct Argument {
     pub error: bool,
     pub show_help: fn(),
     pub show_version: fn(),
-    pub show_error: Box<dyn Fn()>,
+    pub show_error: Box<dyn Fn() + Send>,
 }
 
 impl Argument {

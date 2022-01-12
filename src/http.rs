@@ -1,5 +1,6 @@
 use std::io::{ Write, Read };
 use std::time::{ Duration };
+use std::sync::{ Arc, Mutex };
 use url::{ Url };
 use rand::seq::SliceRandom;
 use rand::{ Rng };
@@ -50,7 +51,7 @@ fn http_get(url: &Url) -> Result<reqwest::blocking::Response, String> {
 }
 
 pub fn download(url: &Url, out: &mut impl Write, 
-    file_type: &mut String) -> Result<(), String> {
+    file_type: Arc<Mutex<String>>) -> Result<(), String> {
     let response = match http_get(url) {
         Ok(response) => response,
         Err(_) => return Err(String::from("error performing request"))
@@ -122,11 +123,13 @@ pub fn download(url: &Url, out: &mut impl Write,
     println!();
 
     if download_data.is_video {
-        file_type.clear();
-        file_type.push_str(".mp4");
+        let mut file_type_u = file_type.lock().unwrap();
+        file_type_u.clear();
+        file_type_u.push_str(".mp4");
     } else {
-        file_type.clear();
-        file_type.push_str(".jpg");
+        let mut file_type_u = file_type.lock().unwrap();
+        file_type_u.clear();
+        file_type_u.push_str(".jpg");
     }
 
     Ok(())
