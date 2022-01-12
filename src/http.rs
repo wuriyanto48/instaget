@@ -13,8 +13,14 @@ fn http_get(url: &Url) -> Result<reqwest::blocking::Response, String> {
 
     // headers
     let mut headers = header::HeaderMap::new();
+
+    // *experimental
+    // experimenting to avoid block by instagram's rate limiter
+
+    // experimental
     headers.insert("Referer", header::HeaderValue::from_static("https://www.google.co.uk/"));
 
+    // experimental
     // proxy
     let proxy = match reqwest::Proxy::http("51.195.188.28:9090") {
         Ok(p) => p,
