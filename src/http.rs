@@ -109,8 +109,6 @@ pub fn download(url: &Url, out: &mut impl Write,
             Err(e) => return Err(format!("error response_download input {}", e))   
         };
 
-        print!(". ");
-
         if line_read <= 0 {
             break;
         }
