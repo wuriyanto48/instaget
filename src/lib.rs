@@ -1,4 +1,4 @@
-pub (crate) const VERSION: &'static str = "0.0.0";
+pub (crate) const VERSION: &'static str = "1.0.0";
 
 mod data;
 mod http;
