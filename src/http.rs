@@ -7,7 +7,7 @@ use url::{ Url };
 use rand::seq::SliceRandom;
 use rand::{ Rng };
 use reqwest::header;
-use crate::data::{ GraphData };
+use crate::data::{ GraphData, DownloadData };
 
 // BUFFER_SIZE = 1Kb
 const BUFFER_SIZE: usize = 1 << 10;
@@ -55,12 +55,9 @@ fn http_get(url: &Url) -> Result<reqwest::blocking::Response, String> {
     Ok(response)
 }
 
-// download to channel's Sender
-// this function will send buffer chunk each (with BUFFER_SIZE size)
-// to : out Sender<Vec<u8>> channel
-pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>, 
-    file_type: Sender<String>, 
-    done: Arc<AtomicBool>) -> Result<(), String> {
+// get_download_data
+// a helper function for getting image or video URL
+fn get_download_data(url: &Url) -> Result<DownloadData, String> {
     let response = match http_get(url) {
         Ok(response) => response,
         Err(_) => return Err(String::from("error performing request"))
@@ -81,6 +78,22 @@ pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>,
 
     // download
     let download_data = match graph_data.download_url() {
+        Ok(download_data) => download_data,
+        Err(_) => return Err(String::from("error getting download url"))
+    };
+
+    Ok(download_data)
+}
+
+// download to channel's Sender
+// a download function that support multithreading
+// this function will send buffer chunk each (with BUFFER_SIZE size)
+// to : out Sender<Vec<u8>> channel
+pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>, 
+    file_type: Sender<String>, 
+    done: Arc<AtomicBool>) -> Result<(), String> {
+
+    let download_data = match get_download_data(url) {
         Ok(download_data) => download_data,
         Err(_) => return Err(String::from("error getting download url"))
     };
@@ -144,26 +157,8 @@ pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>,
 // download to io writer
 pub fn download_to_writer(url: &Url, out: &mut impl Write, 
     file_type: Arc<Mutex<String>>) -> Result<(), String> {
-    let response = match http_get(url) {
-        Ok(response) => response,
-        Err(_) => return Err(String::from("error performing request"))
-    };
 
-    if response.status().as_u16() != 200 {
-        return Err(String::from(format!("error performing request, request returned {}", 
-            response.status().as_u16())));
-    }
-
-    let graph_data = match response.json::<GraphData>() {
-        Ok(graph_data) => graph_data,
-        Err(e) => {
-            println!("{}", e);
-            return Err(String::from("error parsing response data"));
-        }
-    };
-
-    // download
-    let download_data = match graph_data.download_url() {
+    let download_data = match get_download_data(url) {
         Ok(download_data) => download_data,
         Err(_) => return Err(String::from("error getting download url"))
     };
