@@ -1,6 +1,8 @@
 use std::io::{ Write, Read };
 use std::time::{ Duration };
 use std::sync::{ Arc, Mutex };
+use std::sync::mpsc::{ Sender };
+use std::sync::atomic::{ AtomicBool, Ordering };
 use url::{ Url };
 use rand::seq::SliceRandom;
 use rand::{ Rng };
@@ -53,8 +55,12 @@ fn http_get(url: &Url) -> Result<reqwest::blocking::Response, String> {
     Ok(response)
 }
 
-pub fn download(url: &Url, out: &mut impl Write, 
-    file_type: Arc<Mutex<String>>) -> Result<(), String> {
+// download to channel's Sender
+// this function will send buffer chunk each (with BUFFER_SIZE size)
+// to : out Sender<Vec<u8>> channel
+pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>, 
+    file_type: Sender<String>, 
+    done: Arc<AtomicBool>) -> Result<(), String> {
     let response = match http_get(url) {
         Ok(response) => response,
         Err(_) => return Err(String::from("error performing request"))
@@ -73,15 +79,88 @@ pub fn download(url: &Url, out: &mut impl Write,
         }
     };
 
-    // let text_data = match response.text() {
-    //     Ok(text_data) => text_data,
-    //     Err(e) => {
-    //         println!("{}", e);
-    //         return Err(String::from("error parsing response data"));
-    //     }
-    // };
-    
-    // println!("{:?}", text_data);
+    // download
+    let download_data = match graph_data.download_url() {
+        Ok(download_data) => download_data,
+        Err(_) => return Err(String::from("error getting download url"))
+    };
+
+    // send file type
+    if download_data.is_video {
+        let file_type_s = String::from(".mp4");
+        if let Err(e) = file_type.send(file_type_s) {
+            return Err(format!("error send file type {}", e));
+        }
+    } else {
+        let file_type_s = String::from(".jpg");
+        if let Err(e) = file_type.send(file_type_s) {
+            return Err(format!("error send file type {}", e));
+        }
+    }
+
+    let parsed_download_url = match Url::parse(&download_data.download_url) {
+        Ok(parsed_download_url) => parsed_download_url,
+        Err(_) => return Err(String::from("error parsing download url"))
+    };
+
+    let mut response_download = match http_get(&parsed_download_url) {
+        Ok(response) => response,
+        Err(_) => return Err(String::from("error performing download request"))
+    };
+
+    if response_download.status().as_u16() != 200 {
+        return Err(String::from(format!("error performing download request, request returned {}", 
+            response_download.status().as_u16())));
+    }
+
+    let mut buffer = vec![0 as u8; BUFFER_SIZE];
+
+    loop {
+        let line_read = match response_download.read(&mut buffer[..]) {
+            Ok(o) => o,
+            Err(e) => return Err(format!("error response_download input {}", e))   
+        };
+
+        if line_read <= 0 {
+            break;
+        }
+        
+        // send chunk
+        // create buffer copy from original buffer read from response
+        let mut buffer_copy = vec![0 as u8; line_read];
+
+        // copy buffer and send it to the channel sender
+        buffer_copy[..line_read].copy_from_slice(&buffer[..line_read]);
+        if let Err(e) = out.send(buffer_copy) {
+            return Err(format!("error write buffer out {}", e));
+        }
+    }
+
+    done.store(true, Ordering::Relaxed);
+
+    Ok(())
+}
+
+// download to io writer
+pub fn download_to_writer(url: &Url, out: &mut impl Write, 
+    file_type: Arc<Mutex<String>>) -> Result<(), String> {
+    let response = match http_get(url) {
+        Ok(response) => response,
+        Err(_) => return Err(String::from("error performing request"))
+    };
+
+    if response.status().as_u16() != 200 {
+        return Err(String::from(format!("error performing request, request returned {}", 
+            response.status().as_u16())));
+    }
+
+    let graph_data = match response.json::<GraphData>() {
+        Ok(graph_data) => graph_data,
+        Err(e) => {
+            println!("{}", e);
+            return Err(String::from("error parsing response data"));
+        }
+    };
 
     // download
     let download_data = match graph_data.download_url() {

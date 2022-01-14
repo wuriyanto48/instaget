@@ -28,9 +28,11 @@ impl Argument {
         } else {
             let flag_param = args[1].clone();
 
-            if flag_param.contains("-h") || flag_param.contains("--help") && args.len() == 2 {
+            if flag_param.contains("-h") || 
+                flag_param.contains("--help") && args.len() == 2 {
                 argument.help = true;
-            } else if flag_param.contains("-v") || flag_param.contains("-version") && args.len() == 2 {
+            } else if flag_param.contains("-v") || 
+                flag_param.contains("-version") && args.len() == 2 {
                 argument.version = true;
             } else {
                 if let Ok(mut parsed_url) = Url::parse(&flag_param) {
