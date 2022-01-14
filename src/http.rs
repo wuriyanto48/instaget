@@ -67,7 +67,7 @@ pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>,
     };
 
     if response.status().as_u16() != 200 {
-        return Err(String::from(format!("error performing request, request returned {}", 
+        return Err(String::from(format!("error performing request, request return {}", 
             response.status().as_u16())));
     }
 
@@ -109,7 +109,7 @@ pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>,
     };
 
     if response_download.status().as_u16() != 200 {
-        return Err(String::from(format!("error performing download request, request returned {}", 
+        return Err(String::from(format!("error performing download request, request return {}", 
             response_download.status().as_u16())));
     }
 
@@ -118,7 +118,7 @@ pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>,
     loop {
         let line_read = match response_download.read(&mut buffer[..]) {
             Ok(o) => o,
-            Err(e) => return Err(format!("error response_download input {}", e))   
+            Err(e) => return Err(format!("error read response_download {}", e))   
         };
 
         if line_read <= 0 {
@@ -132,7 +132,7 @@ pub fn download_to_tx(url: &Url, out: Sender<Vec<u8>>,
         // copy buffer and send it to the channel sender
         buffer_copy[..line_read].copy_from_slice(&buffer[..line_read]);
         if let Err(e) = out.send(buffer_copy) {
-            return Err(format!("error write buffer out {}", e));
+            return Err(format!("error sending buffer to channel sender {}", e));
         }
     }
 
@@ -179,7 +179,7 @@ pub fn download_to_writer(url: &Url, out: &mut impl Write,
     };
 
     if response_download.status().as_u16() != 200 {
-        return Err(String::from(format!("error performing download request, request returned {}", 
+        return Err(String::from(format!("error performing download request, request return {}", 
             response_download.status().as_u16())));
     }
 
@@ -188,7 +188,7 @@ pub fn download_to_writer(url: &Url, out: &mut impl Write,
     loop {
         let line_read = match response_download.read(&mut buffer[..]) {
             Ok(o) => o,
-            Err(e) => return Err(format!("error response_download input {}", e))   
+            Err(e) => return Err(format!("error read response_download {}", e))   
         };
 
         if line_read <= 0 {
@@ -196,7 +196,7 @@ pub fn download_to_writer(url: &Url, out: &mut impl Write,
         }
         
         if let Err(e) = out.write(&buffer[..line_read]) {
-            return Err(format!("error write buffer out {}", e));
+            return Err(format!("error write buffer to out {}", e));
         }
     }
 
