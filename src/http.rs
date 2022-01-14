@@ -7,6 +7,9 @@ use rand::{ Rng };
 use reqwest::header;
 use crate::data::{ GraphData };
 
+// BUFFER_SIZE = 1Kb
+const BUFFER_SIZE: usize = 1 << 10;
+
 fn http_get(url: &Url) -> Result<reqwest::blocking::Response, String> {
     let u: Url = url.clone();
     //user agent
@@ -101,7 +104,7 @@ pub fn download(url: &Url, out: &mut impl Write,
             response_download.status().as_u16())));
     }
 
-    let mut buffer = vec![0 as u8; 1024];
+    let mut buffer = vec![0 as u8; BUFFER_SIZE];
 
     loop {
         let line_read = match response_download.read(&mut buffer[..]) {
