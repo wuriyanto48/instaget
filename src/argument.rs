@@ -53,13 +53,14 @@ impl Argument {
 
 fn show_help() {
     println!();
-    println!("instaget usage:");
+    println!("----------- instaget usage: -----------");
     println!();
     println!("instaget https://instagram.com/p/BlaBla");
     println!();
     println!("-h/ --help: show help");
     println!("-v/ --version: show version");
     println!();
+    println!("---------------------------------------");
 }
 
 fn show_version() {
