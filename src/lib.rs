@@ -4,4 +4,5 @@ mod data;
 mod http;
 pub mod argument;
 
-pub use self::http::download;
+pub use self::http::download_to_writer;
+pub use self::http::download_to_tx;

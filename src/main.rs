@@ -4,8 +4,8 @@ use std::sync::mpsc;
 use std::thread;
 use std::io::{ Write };
 use std::sync::atomic::{ AtomicBool, Ordering };
-use std::sync::{ Arc, Mutex };
-use instaget:: { argument, download };
+use std::sync::{ Arc };
+use instaget:: { argument, download_to_tx };
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -31,26 +31,20 @@ fn main() {
 
     // begin to download
     let done: Arc<AtomicBool> = Arc::new(AtomicBool::new(false));
-    let shared_file_type = Arc::new(Mutex::new(String::new()));
-    let file_type = shared_file_type.clone();
 
     let (tx_download, rx_download) = mpsc::channel::<Vec<u8>>();
     let (tx_done, rx_done) = mpsc::channel::<bool>();
+    let (tx_file_type, rx_file_type) = mpsc::channel::<String>();
 
     let done_c = done.clone();
 
     // download thread
     thread::spawn(move || {
-        let mut out_buffer: Vec<u8> = Vec::new();
-        if let Err(e) = download(&argument.url.unwrap(), &mut out_buffer, file_type) {
+        if let Err(e) = download_to_tx(&argument.url.unwrap(), 
+            tx_download, tx_file_type, done_c) {
             println!("{}", e);
             process::exit(1);
         }
-
-
-        tx_download.send(out_buffer).unwrap();
-        
-        done_c.store(true, Ordering::Relaxed);
     });
 
     // loading bar thread
@@ -71,28 +65,39 @@ fn main() {
         tx_done.send(true).unwrap();
     });
 
-    if rx_done.recv().unwrap() {
-        let data = match rx_download.recv() {
-            Ok(data) => data,
-            Err(e) => {
-                println!("{}", e);
-                process::exit(1);
-            }
-        };
-        
-        let mut out_file = match std::fs::File::create(format!("out{}", 
-            *shared_file_type.lock().unwrap())) {
-            Ok(out_file) => out_file,
-            Err(_) => {
-                println!("error create output file");
-                process::exit(1);
-            }
-        };
-    
-        if let Err(e) = out_file.write_all(&data[..]) {
+    let file_type = match rx_file_type.recv() {
+        Ok(file_type) => file_type,
+        Err(_) => {
+            println!("error getting file type");
+            process::exit(1);
+        }
+    };
+
+    let mut out_file = match std::fs::File::create(format!("out{}", file_type)) {
+        Ok(out_file) => out_file,
+        Err(_) => {
+            println!("error create output file");
+            process::exit(1);
+        }
+    };
+
+    for data in rx_download {
+        if let Err(e) = out_file.write(&data[..]) {
             println!("{}", e);
             process::exit(1);
         }
+    }
+
+    let download_done = match rx_done.recv() {
+        Ok(download_done) => download_done,
+        Err(_) => {
+            println!("error create output file");
+            process::exit(1);
+        }
+    };
+
+    if download_done {
+        println!("download done..");
     }
     
 }
