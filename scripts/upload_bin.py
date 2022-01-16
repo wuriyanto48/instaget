@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import pathlib
 from minio import Minio
 
 storage_endpoint = os.getenv('STORAGE_ENDPOINT')
