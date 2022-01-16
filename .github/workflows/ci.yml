@@ -26,8 +26,21 @@ jobs:
         continue-on-error: true
         with:
           command: check
+      - name: Install Ubuntu deps
+        run: |
+          chmod +x ./scripts/install_ubuntu_deps
+          bash ./scripts/install_ubuntu_deps
+
+      - name: Run prepare build
+        run: |
+          chmod +x ./scripts/prepare_build
+          bash ./scripts/prepare_build
 
       - name: Run test
         run: cargo test
       - name: Run build
         run: cargo build
+      - name: Run build for Linux
+        run: make build-linux
+      - name: Run build for OSX
+        run: make build-osx
