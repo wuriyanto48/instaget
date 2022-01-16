@@ -10,7 +10,8 @@ build-linux:
 	echo 'building for Linux...' \
 	&& rm -rf ${PWD}/build-result/linux \
 	&& mkdir -p ${PWD}/build-result/linux \
-	&& cargo build --target=x86_64-unknown-linux-gnu --target-dir=${PWD}/build-result/linux
+	&& cargo build --target=x86_64-unknown-linux-gnu --target-dir=${PWD}/build-result/linux \
+	&& ${PWD}/build-result/osx/x86_64-unknown-linux-gnu/debug/instaget -h 2>/dev/null; true
 
 build-osx:
 	echo 'building for OSX...' \
