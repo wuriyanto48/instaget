@@ -25,14 +25,12 @@ jobs:
         continue-on-error: true
         with:
           command: check
-
+        
       - name: Run prepare build
         run: |
           chmod +x ./scripts/prepare_build
+          chmod +x ./scripts/upload_bin.py
           bash ./scripts/prepare_build
-
-      - name: check python
-        run: python3 --version
 
       - name: Run test
         run: cargo test
@@ -40,6 +38,16 @@ jobs:
         run: cargo build
       - name: Run build for OSX
         run: make build-osx
+
+      - name: upload bin
+        env:
+          STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
+          STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCESS_KEY }}
+          STORAGE_SECRET_KEY: ${{ secrets.STORAGE_SECRET_KEY }}
+          UPLOAD_FOR: 'OSX'
+        run: | 
+          pip3 install minio
+          ./scripts/upload_bin.py
 
   linux:
     runs-on: ubuntu-latest
@@ -67,10 +75,8 @@ jobs:
       - name: Run prepare build
         run: |
           chmod +x ./scripts/prepare_build
+          chmod +x ./scripts/upload_bin.py
           bash ./scripts/prepare_build
-
-      - name: check python
-        run: python3 --version
 
       - name: Run test
         run: cargo test
@@ -78,3 +84,13 @@ jobs:
         run: cargo build
       - name: Run build for Linux
         run: make build-linux
+      
+      - name: upload bin
+        env:
+          STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
+          STORAGE_ACCESS_KEY: ${{ secrets.STORAGE_ACCESS_KEY }}
+          STORAGE_SECRET_KEY: ${{ secrets.STORAGE_SECRET_KEY }}
+          UPLOAD_FOR: 'LINUX'
+        run: | 
+          pip3 install minio
+          ./scripts/upload_bin.py
