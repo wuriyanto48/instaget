@@ -34,9 +34,7 @@ jobs:
       - name: Run prepare build
         run: |
           chmod +x ./scripts/prepare_build
-          chmod +x ./scripts/prepare_build_linux_from_osx
           bash ./scripts/prepare_build
-          bash ./scripts/prepare_build_linux_from_osx
 
       - name: Run test
         run: cargo test
@@ -44,5 +42,3 @@ jobs:
         run: cargo build
       - name: Run build for Linux
         run: make build-linux
-      - name: Run build for OSX
-        run: make build-osx
