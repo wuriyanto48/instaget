@@ -4,11 +4,27 @@ A Command line tool for downloading video or image data from `Instagram`
 
 [![instaget CI](https://github.com/wuriyanto48/instaget/actions/workflows/ci.yml/badge.svg)](https://github.com/wuriyanto48/instaget/actions/workflows/ci.yml)
 
+# 
+
+### Install
+
+MacOS
+```shell
+$ wget http://storage.teknologipedia.id/instaget/osx/instaget
+$ chmod +x instaget
+$ ./instaget -h
+```
+
+Linux
+```shell
+$ wget http://storage.teknologipedia.id/instaget/linux/instaget
+$ chmod +x instaget
+$ ./instaget -h
+```
+
 ### Build binary from source
 Requirements
 - Rust https://www.rust-lang.org/
-
-# 
 
 Build
 ```shell
@@ -19,15 +35,15 @@ $ cargo build
 
 show help
 ```shell
-$ ./target/debug/instaget -h
+$ ./instaget -h
 ```
 
 download from shared URL
 ```shell
-$ ./target/debug/instaget https://www.instagram.com/p/CYjktDFqxIm/?utm_source=ig_web_copy_link
+$ ./instaget https://www.instagram.com/p/CYjktDFqxIm/?utm_source=ig_web_copy_link
 ```
 
 or just the original URL
 ```shell
-$ ./target/debug/instaget https://www.instagram.com/p/CYjktDFqxIm/
+$ ./instaget https://www.instagram.com/p/CYjktDFqxIm/
 ```
