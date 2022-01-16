@@ -28,6 +28,8 @@ Requirements
 
 Build
 ```shell
+$ git clone https://github.com/wuriyanto48/instaget.git
+$ cd instaget/
 $ make build
 ```
 
