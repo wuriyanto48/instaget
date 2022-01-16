@@ -22,13 +22,13 @@ $ chmod +x instaget
 $ ./instaget -h
 ```
 
-### Build binary from source
+### If you prefer to build your own binary from source
 Requirements
 - Rust https://www.rust-lang.org/
 
 Build
 ```shell
-$ cargo build
+$ make build
 ```
 
 ### Download `photo` or `video` with simple command line tools
