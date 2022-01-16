@@ -1,17 +1,20 @@
 .PHONY : build build-linux build-osx build-win
 
 PWD=$(shell pwd)
-OPENSSL_DIR_OSX=/usr/local/Cellar/openssl@1.1/1.1.1m
+
 build:
 	echo 'building for local testing...' \
 	&& cargo build
 
 build-linux:
 	echo 'building for Linux...' \
+	&& echo ${PWD}/builder-assets/usr/ \
 	&& rm -rf ${PWD}/build-result/linux \
 	&& mkdir -p ${PWD}/build-result/linux \
-	&& cargo build --target=x86_64-unknown-linux-gnu --target-dir=${PWD}/build-result/linux \
-	&& ${PWD}/build-result/osx/x86_64-unknown-linux-gnu/debug/instaget -h 2>/dev/null; true
+	&& CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-unknown-linux-gnu-gcc \
+		OPENSSL_DIR="${PWD}/builder-assets/usr/" \
+		OPENSSL_LIB_DIR="${PWD}/builder-assets/usr/lib/x86_64-linux-gnu/" \
+		cargo build --target=x86_64-unknown-linux-gnu --target-dir=${PWD}/build-result/linux
 
 build-osx:
 	echo 'building for OSX...' \
@@ -29,4 +32,5 @@ build-win:
 clean:
 	rm -rf ${PWD}/build-result/linux \
 	&& rm -rf ${PWD}/build-result/osx \
-	&& rm -rf ${PWD}/build-result/win
+	&& rm -rf ${PWD}/build-result/win \
+	&& rm -rf builder-assets
