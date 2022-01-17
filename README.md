@@ -22,6 +22,8 @@ $ chmod +x instaget
 $ ./instaget -h
 ```
 
+# 
+
 ### If you prefer to build your own binary from source
 Requirements
 - Rust https://www.rust-lang.org/
@@ -32,6 +34,8 @@ $ git clone https://github.com/wuriyanto48/instaget.git
 $ cd instaget/
 $ make build
 ```
+
+# 
 
 ### Download `photo` or `video` with simple command line tools
 
