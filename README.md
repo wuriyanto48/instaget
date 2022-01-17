@@ -9,7 +9,7 @@ A Command line tool for downloading video or image data from `Instagram`
 ### Install
 
 #### MacOS
-Follow this link http://storage.teknologipedia.id/instaget/osx/instaget, or download with `curl` or `wget`
+Follow this link <a href="http://storage.teknologipedia.id/instaget/osx/instaget" target="_blank">Download</a>, or download with `curl` or `wget`
 
 ```shell
 $ wget http://storage.teknologipedia.id/instaget/osx/instaget
@@ -18,7 +18,7 @@ $ ./instaget -h
 ```
 
 #### Linux
-Follow this link http://storage.teknologipedia.id/instaget/linux/instaget, or download with `curl` or `wget`
+Follow this link <a href="http://storage.teknologipedia.id/instaget/linux/instaget" target="_blank">Download</a>, or download with `curl` or `wget`
 
 ```shell
 $ wget http://storage.teknologipedia.id/instaget/linux/instaget
