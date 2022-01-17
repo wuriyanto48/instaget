@@ -36,7 +36,7 @@ fn main() {
     let (tx_done, rx_done) = mpsc::channel::<bool>();
     let (tx_file_type, rx_file_type) = mpsc::channel::<String>();
 
-    let done_c = done.clone();
+    let done_c = Arc::clone(&done);
 
     // download thread
     thread::spawn(move || {
