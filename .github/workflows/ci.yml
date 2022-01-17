@@ -34,8 +34,7 @@ jobs:
 
       - name: Run test
         run: cargo test
-      - name: Run build
-        run: cargo build
+        
       - name: Run build for OSX
         run: make build-osx
 
@@ -80,8 +79,7 @@ jobs:
 
       - name: Run test
         run: cargo test
-      - name: Run build
-        run: cargo build
+
       - name: Run build for Linux
         run: make build-linux
       
