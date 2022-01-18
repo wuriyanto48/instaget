@@ -7,9 +7,9 @@ BUCKET_NAME = 'instaget'
 
 def upload(object_name: str, bin_path: str):
     file_stat = os.stat(bin_path)
-    with open(bin_path, 'rb') as linux_buff:
+    with open(bin_path, 'rb') as buff:
         client.remove_object(bucket_name=BUCKET_NAME, object_name=object_name)
-        result = client.put_object(bucket_name=BUCKET_NAME, object_name=object_name, data=linux_buff, length=file_stat.st_size)
+        result = client.put_object(bucket_name=BUCKET_NAME, object_name=object_name, data=buff, length=file_stat.st_size)
         print('upload result ', result.object_name)
 
 if __name__ == '__main__':
