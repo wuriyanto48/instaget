@@ -31,11 +31,11 @@ if __name__ == '__main__':
         print('uploading osx bin')
         object_name = 'osx/instaget'
         osx_bin_path = os.path.join(cur_dir, 'build-result/osx/x86_64-apple-darwin/debug/instaget')
-        upload(object_name=object_name, path=osx_bin_path)
+        upload(object_name=object_name, bin_path=osx_bin_path)
         print('uploading osx bin succeed.....')
     else:
         print('uploading linux bin')
         object_name = 'linux/instaget'
         linux_bin_path = os.path.join(cur_dir, 'build-result/linux/x86_64-unknown-linux-gnu/debug/instaget')
-        upload(object_name=object_name, path=linux_bin_path)
+        upload(object_name=object_name, bin_path=linux_bin_path)
         print('uploading linux bin succeed.....')
