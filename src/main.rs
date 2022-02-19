@@ -29,6 +29,10 @@ fn main() {
         process::exit(1);
     }
 
+    // here we move url and unique_path from argument variable 
+    // with struct pattern matching
+    let argument::Argument{ url, unique_path, .. } = argument;
+
     // begin to download
     let done: Arc<AtomicBool> = Arc::new(AtomicBool::new(false));
 
@@ -40,7 +44,7 @@ fn main() {
 
     // download thread
     thread::spawn(move || {
-        if let Err(e) = download_to_tx(&argument.url.unwrap(), 
+        if let Err(e) = download_to_tx(&url.unwrap(),
             tx_download, tx_file_type, done_c) {
             println!("{}", e);
             process::exit(1);
@@ -73,7 +77,9 @@ fn main() {
         }
     };
 
-    let mut out_file = match std::fs::File::create(format!("out{}", file_type)) {
+    let file_out_name = unique_path.unwrap();
+
+    let mut out_file = match std::fs::File::create(format!("{}{}", file_out_name, file_type)) {
         Ok(out_file) => out_file,
         Err(_) => {
             println!("error create output file");

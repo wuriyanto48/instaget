@@ -3,6 +3,7 @@ use url::{ Url };
 
 pub struct Argument {
     pub url: Option<Url>,
+    pub unique_path: Option<String>,
     pub help: bool,
     pub version: bool,
     pub error: bool,
@@ -15,6 +16,7 @@ impl Argument {
     pub fn parse(args: &[String]) -> Argument {
         let mut argument = Argument{
             url: None,
+            unique_path: None,
             help: false,
             version: false,
             error: false,
@@ -37,6 +39,17 @@ impl Argument {
             } else {
                 if let Ok(mut parsed_url) = Url::parse(&flag_param) {
                     parsed_url.query_pairs_mut().append_pair("__a", "1");
+                    if parsed_url.path_segments().is_none() {
+                        argument.unique_path = Some(String::from("out"));
+                    } else {
+                        let path_segments = parsed_url.path_segments().unwrap();
+                        let path_vec: Vec<&str> = path_segments.collect();
+                        if path_vec.get(1).is_none() {
+                            argument.unique_path = Some(String::from("out"));
+                        } else {
+                            argument.unique_path = Some((*path_vec.get(1).unwrap()).to_string());
+                        }
+                    }
                     argument.url = Some(parsed_url);
                 } else {
                     argument.error = true;
@@ -55,10 +68,10 @@ fn show_help() {
     println!();
     println!("----------- instaget usage: -----------");
     println!();
-    println!("instaget https://instagram.com/p/BlaBla");
+    println!("> instaget https://instagram.com/p/BlaBla");
     println!();
-    println!("-h/ --help: show help");
-    println!("-v/ --version: show version");
+    println!("> -h/ --help: show help");
+    println!("> -v/ --version: show version");
     println!();
     println!("---------------------------------------");
 }
