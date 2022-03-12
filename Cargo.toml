@@ -1,6 +1,6 @@
 [package]
 name = "instaget"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Wuriyanto <wuriyanto48@yahoo.co.id>"]
 edition = "2018"
 
