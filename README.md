@@ -57,3 +57,8 @@ or just the original URL
 ```shell
 $ ./instaget https://www.instagram.com/p/CYjktDFqxIm/
 ```
+
+with custom output folder
+```shell
+$ ./instaget https://www.instagram.com/p/CYjktDFqxIm/ --output /Users/johndoe/folder
+```
